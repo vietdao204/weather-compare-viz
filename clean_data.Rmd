@@ -7,23 +7,21 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-```
 
-Packages
-```{r include=FALSE}
-install.packages("tidyverse")
+#install.packages("tidyverse")
 library(dplyr)
 ```
 
-Hanoi
-Date: 09/2012 - 09/2013
+## Hanoi  
+#### 2012-09-04 - 2013-08-30  
+
 ```{r}
 hanoi_orig <- read.csv('./Data/hanoi.csv', header = TRUE, stringsAsFactors = FALSE)
 keepCols_hanoi <- c('NAME', 'DATE', 'PRCP', 'TAVG', 'TMAX', 'TMIN')
 hanoi <- hanoi_orig[, keepCols_hanoi]
 
 # no of NAs in each row
-sapply(hanoi, function(x) sum(is.na(x)));
+# sapply(hanoi, function(x) sum(is.na(x)));
 
 # calculate NA TMIN and TMAX from TAVG and each other
 hanoi[is.na(hanoi$TMIN) & !is.na(hanoi$TMAX), 'TMIN'] <- hanoi[is.na(hanoi$TMIN) & !is.na(hanoi$TMAX), 'TAVG']*2 - hanoi[is.na(hanoi$TMIN) & !is.na(hanoi$TMAX), 'TMAX']
@@ -37,6 +35,7 @@ hanoi['PRCP'][is.na(hanoi['PRCP'])] <- 0.0
 
 # set DATE to Date object
 hanoi$DATE <- as.Date(hanoi$DATE)
+hanoi <- hanoi[order(hanoi$DATE),]
 
 # change name from 'HA DONG' to 'HANOI' for simplicity
 hanoi$NAME <- 'HANOI'
@@ -47,14 +46,15 @@ hanoi$SNWD <- 0
 
 # dont need TAVG
 hanoi <- hanoi[, !(names(hanoi) %in% ('TAVG'))]
+hanoi <- hanoi[, c('NAME', 'DATE', 'PRCP', 'SNOW', 'SNWD', 'TMAX', 'TMIN')]
 ```
 
-St. Peter
-Date: 08/15/2013 - 05/31/2017
-```{r echo=FALSE}
-stpeter_orig <- read.csv('./Data/stpeter.csv', header = TRUE, stringsAsFactors = FALSE);
+## St. Peter  
+#### 2013-08-15 - 2017-05-31  
 
-keepCols_stpeter <- c('NAME', 'DATE', 'PRCP', 'SNOW', 'SNWD', 'TMAX', 'TMIN');
+```{r warning=FALSE}
+stpeter_orig <- read.csv('./Data/stpeter.csv', header = TRUE, stringsAsFactors = FALSE)
+keepCols_stpeter <- c('NAME', 'DATE', 'PRCP', 'SNOW', 'SNWD', 'TMAX', 'TMIN')
 stpeter <- stpeter_orig[, keepCols_stpeter];
 # stpeter %>% group_by(NAME) %>% summarise(n = n())
 
@@ -66,7 +66,8 @@ stpeter <- stpeter[order(stpeter$DATE),]
 stpeter <- aggregate(stpeter, by=list(DATE_ID=stpeter$DATE), min, na.rm = TRUE)
 stpeter <- stpeter[, !(names(stpeter) %in% ('DATE_ID'))]
 
-sapply(stpeter, function(x) sum(is.infinite(x)))
+# sapply(stpeter, function(x) sum(is.infinite(x)))
+
 # few Inf is okay
 View(stpeter %>% filter(is.infinite(PRCP)|is.infinite(SNWD)|is.infinite(TMAX)|is.infinite(TMIN)))
 
@@ -74,49 +75,68 @@ View(stpeter %>% filter(is.infinite(PRCP)|is.infinite(SNWD)|is.infinite(TMAX)|is
 stpeter$NAME <- 'STPETER'
 ```
 
-SF 
-Date: 06/01/2017 - 09/05/2019
-```{r include=FALSE}
-sf_orig <- read.csv('./Data/sf.csv');
-keepCols_sf <- c('NAME', 'DATE', 'PRCP', 'SNOW', 'SNWD', 'TAVG', 'TMAX', 'TMIN');
-sf <- sf_orig[, keepCols_sf];
-sapply(sf, function(x) sum(is.na(x)));
+## San Francisco  
+#### 2017-06-01 - 2019-09-05  
 
-# set DATE to Date object
+```{r warning=FALSE}
+sf_orig <- read.csv('./Data/sf.csv');
+keepCols_sf <- c('NAME', 'DATE', 'PRCP', 'SNOW', 'SNWD', 'TMAX', 'TMIN')
+sf <- sf_orig[, keepCols_sf]
+
+sapply(sf, function(x) sum(is.na(x)))
+
 sf$DATE <- as.Date(sf$DATE)
 sf <- sf[order(sf$DATE),]
 
 sf <- sf %>% filter(NAME == 'SAN FRANCISCO DOWNTOWN, CA US')
-sf[c('SNOW', 'SNWD')][is.na(sf[c('SNOW', 'SNWD')])] <- 0;
-sf <- sf[, !(names(sf) %in% ('TAVG'))]
 sf$NAME <- 'SF'
+
+sf[c('SNOW', 'SNWD')][is.na(sf[c('SNOW', 'SNWD')])] <- 0
 ```
 
-Oakland
-Date: 05/01/2018 - 09/05/2019
-```{r include=FALSE}
-oakland <- read.csv('./Data/oakland.csv');
-oakland <- oakland[, keepCols];
-sapply(oakland, function(x) sum(is.na(x)));
+## Oakland  
+#### 2018-05-01 - 2019-09-05  
 
-oakland <- oakland[oakland$NAME %in% c('OAKLAND METROPOLITAN, CA US', 'OAKLAND MUSEUM, CA US'),];
-oakland <- oakland[order(oakland$DATE),];
-oakland <- oakland[!is.na(oakland$TMAX), ];
-oakland[c('SNOW', 'SNWD')][is.na(oakland[c('SNOW', 'SNWD')])] <- 0.0;
+```{r warning=FALSE}
+oakland_orig <- read.csv('./Data/oakland.csv')
+oakland <- oakland_orig[, keepCols_sf]
+sapply(oakland, function(x) sum(is.na(x)))
 
-oakland$DATE <- as.Date(oakland$DATE);
-oakland$ID <- seq.int(nrow(oakland));
-ids_to_drop <- oakland[oakland$NAME == 'OAKLAND METROPOLITAN, CA US' & oakland$DATE > '2018-06-20',]$ID;
+oakland$DATE <- as.Date(oakland$DATE)
+oakland <- oakland[order(oakland$DATE),]
+
+oakland <- oakland[oakland$NAME %in% c('OAKLAND METROPOLITAN, CA US', 'OAKLAND MUSEUM, CA US'),]
+
+oakland[c('SNOW', 'SNWD')][is.na(oakland[c('SNOW', 'SNWD')])] <- 0.0
+# oakland <- oakland[!is.na(oakland$TMAX), ]
+
+oakland$ID <- seq.int(nrow(oakland))
+ids_to_drop <- oakland[oakland$NAME == 'OAKLAND METROPOLITAN, CA US' & oakland$DATE > '2018-06-20',]$ID
 oakland <- oakland[!(oakland$ID %in% ids_to_drop), ];
 oakland <- oakland[, !(colnames(oakland) == "ID")];
+
 oakland$NAME <- 'OAKLAND'
+# rearrage index column
+row.names(oakland) <- NULL
 ```
 
-Swarthmore
-Date: 09/06/2019 - 06/15/2020
+## Swarthmore  
+#### 2019-09-06 - 2020-06-15  
+
 ```{r}
 
 ```
 
-Victoria
-Leuven
+## Victoria  
+#### 2019-06-15 - 2020-06-14  
+
+```{r}
+
+```
+
+## Leuven  
+#### 2019-06-15 - 2020-06-14  
+
+```{r}
+
+```
