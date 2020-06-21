@@ -2,7 +2,7 @@
 title: "clean_data"
 author: "Viet Dao"
 date: "6/15/2020"
-output: html_document
+output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
@@ -79,7 +79,7 @@ stpeter$NAME <- 'STPETER'
 #### 2017-06-01 - 2019-09-05  
 
 ```{r warning=FALSE}
-sf_orig <- read.csv('./Data/sf.csv');
+sf_orig <- read.csv('./Data/sf.csv', header = TRUE, stringsAsFactors = FALSE);
 keepCols_sf <- c('NAME', 'DATE', 'PRCP', 'SNOW', 'SNWD', 'TMAX', 'TMIN')
 sf <- sf_orig[, keepCols_sf]
 
@@ -98,7 +98,7 @@ sf[c('SNOW', 'SNWD')][is.na(sf[c('SNOW', 'SNWD')])] <- 0
 #### 2018-05-01 - 2019-09-05  
 
 ```{r warning=FALSE}
-oakland_orig <- read.csv('./Data/oakland.csv')
+oakland_orig <- read.csv('./Data/oakland.csv', header = TRUE, stringsAsFactors = FALSE)
 oakland <- oakland_orig[, keepCols_sf]
 sapply(oakland, function(x) sum(is.na(x)))
 
@@ -124,7 +124,21 @@ row.names(oakland) <- NULL
 #### 2019-09-06 - 2020-06-15  
 
 ```{r}
+swarthmore_orig <- read.csv('./Data/swarthmore.csv', header = TRUE, stringsAsFactors = FALSE)
 
+# swarthmore_orig %>% group_by(NAME) %>% summarise(n = n())
+# sapply(swarthmore, function(x) sum(is.na(x)))
+swarthmore <- swarthmore_orig[, keepCols_sf]
+
+swarthmore$DATE <- as.Date(swarthmore$DATE)
+swarthmore <- swarthmore[order(swarthmore$DATE),]
+
+swarthmore <- swarthmore[swarthmore$NAME %in% c('PHILADELPHIA INTERNATIONAL AIRPORT, PA US'),]
+
+swarthmore['SNWD'][is.na(swarthmore['SNWD'])] <- 0
+
+swarthmore$NAME <- 'SWARTHMORE'
+row.names(swarthmore) <- NULL
 ```
 
 ## Victoria  
@@ -140,3 +154,6 @@ row.names(oakland) <- NULL
 ```{r}
 
 ```
+
+Notes:  
+- Data for Swarthmore are from Philadelphia International Airport Station, which is closest to Swarthmore.  
