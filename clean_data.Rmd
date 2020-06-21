@@ -44,6 +44,9 @@ hanoi$NAME <- 'HANOI'
 # add SNOW and SNWD columns
 hanoi$SNOW <- 0
 hanoi$SNWD <- 0
+
+# dont need TAVG
+hanoi <- hanoi[, !(names(hanoi) %in% ('TAVG'))]
 ```
 
 St. Peter
@@ -74,13 +77,19 @@ stpeter$NAME <- 'STPETER'
 SF 
 Date: 06/01/2017 - 09/05/2019
 ```{r include=FALSE}
-sf <- read.csv('./Data/sf.csv');
-sf <- sf[, keepCols];
+sf_orig <- read.csv('./Data/sf.csv');
+keepCols_sf <- c('NAME', 'DATE', 'PRCP', 'SNOW', 'SNWD', 'TAVG', 'TMAX', 'TMIN');
+sf <- sf_orig[, keepCols_sf];
 sapply(sf, function(x) sum(is.na(x)));
 
-sf <- sf[sf$NAME == 'SAN FRANCISCO DOWNTOWN, CA US', ];
-sf <- sf[order(sf$DATE),];
-sf[c('SNOW', 'SNWD')][is.na(sf[c('SNOW', 'SNWD')])] <- 0.0;
+# set DATE to Date object
+sf$DATE <- as.Date(sf$DATE)
+sf <- sf[order(sf$DATE),]
+
+sf <- sf %>% filter(NAME == 'SAN FRANCISCO DOWNTOWN, CA US')
+sf[c('SNOW', 'SNWD')][is.na(sf[c('SNOW', 'SNWD')])] <- 0;
+sf <- sf[, !(names(sf) %in% ('TAVG'))]
+sf$NAME <- 'SF'
 ```
 
 Oakland
