@@ -7,8 +7,6 @@ output: pdf_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-
-#install.packages("tidyverse")
 library(dplyr)
 ```
 
@@ -142,10 +140,31 @@ row.names(swarthmore) <- NULL
 ```
 
 ## Victoria  
-#### 2019-06-15 - 2020-06-14  
+#### 2019-06-16 - 2020-06-15  
 
-```{r}
+```{r warning=FALSE}
+victoria_orig <- read.csv('./Data/victoria.csv', header = TRUE, stringsAsFactors = FALSE)
 
+victoria_orig %>% group_by(NAME) %>% summarise(n = n())
+sapply(victoria_orig, function(x) sum(is.na(x)))
+
+victoria <- victoria_orig[, keepCols_sf]
+
+victoria$DATE <- as.Date(victoria$DATE)
+victoria <- victoria[order(victoria$DATE),]
+victoria <- victoria %>% filter(DATE >= '2019-06-16')
+
+victoria %>% group_by(NAME) %>% summarise(prcp_na=sum(is.na(PRCP)),snow_na=sum(is.na(SNOW)), snwd_na=sum(is.na(SNWD)), tmax_na=sum(is.na(TMAX)), tmin_na=sum(is.na(TMIN)))
+victoria <- victoria %>% filter(NAME %in% c('VICTORIA UNIVERSITY CS, BC CA', 'VICTORIA 6.0 NNW, CA'))
+victoria$NAME <- 'VICTORIA'
+
+victoria <- aggregate(victoria, by=list(DATE_ID=victoria$DATE), min, na.rm = TRUE)
+
+victoria[is.infinite(victoria$SNWD),]['SNWD'] <- 0
+victoria[is.infinite(victoria$SNOW),]['SNOW'] <- 0
+sapply(victoria, function(x) sum(is.na(x)))
+
+victoria <- victoria[, !(colnames(victoria)=='DATE_ID')]
 ```
 
 ## Leuven  
