@@ -167,12 +167,18 @@ sapply(victoria, function(x) sum(is.na(x)))
 victoria <- victoria[, !(colnames(victoria)=='DATE_ID')]
 ```
 
-## Leuven  
+## Brussels (not used)  
 #### 2019-06-15 - 2020-06-14  
 
 ```{r}
+brussels_orig <- read.csv('./Data/brussels.csv', header = TRUE, stringsAsFactors = FALSE)
+brussels <- brussels_orig[, keepCols_hanoi]
+sapply(brussels, function(x) sum(is.na(x)))
 
+brussels$DATE <- as.Date(brussels$DATE)
+brussels <- brussels[order(brussels$DATE),]
 ```
 
 Notes:  
 - Data for Swarthmore are from Philadelphia International Airport Station, which is closest to Swarthmore.  
+- Not enough complete data to use Brussels so Brussels will temporarily not be present in visualizations.
