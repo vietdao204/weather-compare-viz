@@ -1,19 +1,12 @@
----
-title: "clean_data"
-author: "Viet Dao"
-date: "6/15/2020"
-output: pdf_document
----
+## Data Cleaning #
+## Viet Dao ######
+## Jun 15, 2020 ##
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-library(dplyr)
-```
+library(tidyverse)
 
-## Hanoi  
-#### 2012-09-04 - 2013-08-30  
-
-```{r}
+#########################################
+#### Hanoi (2012-09-04 - 2013-08-30) ####
+#########################################
 hanoi_orig <- read.csv('./Data/hanoi.csv', header = TRUE, stringsAsFactors = FALSE)
 keepCols_hanoi <- c('NAME', 'DATE', 'PRCP', 'TAVG', 'TMAX', 'TMIN')
 hanoi <- hanoi_orig[, keepCols_hanoi]
@@ -45,12 +38,11 @@ hanoi$SNWD <- 0
 # dont need TAVG
 hanoi <- hanoi[, !(names(hanoi) %in% ('TAVG'))]
 hanoi <- hanoi[, c('NAME', 'DATE', 'PRCP', 'SNOW', 'SNWD', 'TMAX', 'TMIN')]
-```
 
-## St. Peter  
-#### 2013-08-15 - 2017-05-31  
 
-```{r warning=FALSE}
+#############################################
+#### St. Peter (2013-08-15 - 2017-05-31) ####
+#############################################
 stpeter_orig <- read.csv('./Data/stpeter.csv', header = TRUE, stringsAsFactors = FALSE)
 keepCols_stpeter <- c('NAME', 'DATE', 'PRCP', 'SNOW', 'SNWD', 'TMAX', 'TMIN')
 stpeter <- stpeter_orig[, keepCols_stpeter];
@@ -63,20 +55,25 @@ stpeter <- stpeter[order(stpeter$DATE),]
 # fill NAs
 stpeter <- aggregate(stpeter, by=list(DATE_ID=stpeter$DATE), min, na.rm = TRUE)
 stpeter <- stpeter[, !(names(stpeter) %in% ('DATE_ID'))]
+stpeter['SNWD'][stpeter['SNOW']==0] <- 0
+
+stpeter$PRCP[!is.finite(stpeter$PRCP)] <- NA
+stpeter$SNWD[!is.finite(stpeter$SNWD)] <- NA
+stpeter$TMAX[!is.finite(stpeter$TMAX)] <- NA
+stpeter$TMIN[!is.finite(stpeter$TMIN)] <- NA
 
 # sapply(stpeter, function(x) sum(is.infinite(x)))
 
-# few Inf is okay
-View(stpeter %>% filter(is.infinite(PRCP)|is.infinite(SNWD)|is.infinite(TMAX)|is.infinite(TMIN)))
+# few NA is okay
+View(stpeter %>% filter(is.na(PRCP)|is.na(SNWD)|is.na(TMAX)|is.na(TMIN)))
 
 # rename for simplicty
 stpeter$NAME <- 'STPETER'
-```
 
-## San Francisco  
-#### 2017-06-01 - 2019-09-05  
 
-```{r warning=FALSE}
+#################################################
+#### San Francisco (2017-06-01 - 2019-09-05) ####
+#################################################
 sf_orig <- read.csv('./Data/sf.csv', header = TRUE, stringsAsFactors = FALSE);
 keepCols_sf <- c('NAME', 'DATE', 'PRCP', 'SNOW', 'SNWD', 'TMAX', 'TMIN')
 sf <- sf_orig[, keepCols_sf]
@@ -90,12 +87,11 @@ sf <- sf %>% filter(NAME == 'SAN FRANCISCO DOWNTOWN, CA US')
 sf$NAME <- 'SF'
 
 sf[c('SNOW', 'SNWD')][is.na(sf[c('SNOW', 'SNWD')])] <- 0
-```
 
-## Oakland  
-#### 2018-05-01 - 2019-09-05  
 
-```{r warning=FALSE}
+###########################################
+#### Oakland (2018-05-01 - 2019-09-05) ####
+###########################################
 oakland_orig <- read.csv('./Data/oakland.csv', header = TRUE, stringsAsFactors = FALSE)
 oakland <- oakland_orig[, keepCols_sf]
 sapply(oakland, function(x) sum(is.na(x)))
@@ -116,12 +112,11 @@ oakland <- oakland[, !(colnames(oakland) == "ID")];
 oakland$NAME <- 'OAKLAND'
 # rearrage index column
 row.names(oakland) <- NULL
-```
 
-## Swarthmore  
-#### 2019-09-06 - 2020-06-15  
 
-```{r}
+##############################################
+#### Swarthmore (2019-06-15 - 2020-06-14) ####
+##############################################
 swarthmore_orig <- read.csv('./Data/swarthmore.csv', header = TRUE, stringsAsFactors = FALSE)
 
 # swarthmore_orig %>% group_by(NAME) %>% summarise(n = n())
@@ -131,18 +126,18 @@ swarthmore <- swarthmore_orig[, keepCols_sf]
 swarthmore$DATE <- as.Date(swarthmore$DATE)
 swarthmore <- swarthmore[order(swarthmore$DATE),]
 
+# Use data from Philadelphia International Airport Station, which is closest to Swarthmore.
 swarthmore <- swarthmore[swarthmore$NAME %in% c('PHILADELPHIA INTERNATIONAL AIRPORT, PA US'),]
 
 swarthmore['SNWD'][is.na(swarthmore['SNWD'])] <- 0
 
 swarthmore$NAME <- 'SWARTHMORE'
 row.names(swarthmore) <- NULL
-```
 
-## Victoria  
-#### 2019-06-16 - 2020-06-15  
 
-```{r warning=FALSE}
+############################################
+#### Victoria (2019-06-16 - 2020-06-15) ####
+############################################
 victoria_orig <- read.csv('./Data/victoria.csv', header = TRUE, stringsAsFactors = FALSE)
 
 victoria_orig %>% group_by(NAME) %>% summarise(n = n())
@@ -159,26 +154,10 @@ victoria <- victoria %>% filter(NAME %in% c('VICTORIA UNIVERSITY CS, BC CA', 'VI
 victoria$NAME <- 'VICTORIA'
 
 victoria <- aggregate(victoria, by=list(DATE_ID=victoria$DATE), min, na.rm = TRUE)
+victoria <- victoria[, !(colnames(victoria)=='DATE_ID')]
 
+sapply(victoria, function(x) sum(!is.finite(x)))
 victoria[is.infinite(victoria$SNWD),]['SNWD'] <- 0
 victoria[is.infinite(victoria$SNOW),]['SNOW'] <- 0
-sapply(victoria, function(x) sum(is.na(x)))
-
-victoria <- victoria[, !(colnames(victoria)=='DATE_ID')]
-```
-
-## Brussels (not used)  
-#### 2019-06-15 - 2020-06-14  
-
-```{r}
-brussels_orig <- read.csv('./Data/brussels.csv', header = TRUE, stringsAsFactors = FALSE)
-brussels <- brussels_orig[, keepCols_hanoi]
-sapply(brussels, function(x) sum(is.na(x)))
-
-brussels$DATE <- as.Date(brussels$DATE)
-brussels <- brussels[order(brussels$DATE),]
-```
-
-Notes:  
-- Data for Swarthmore are from Philadelphia International Airport Station, which is closest to Swarthmore.  
-- Not enough complete data to use Brussels so Brussels will temporarily not be present in visualizations.
+victoria$TMAX[!is.finite(victoria$TMAX)] <- NA
+victoria$TMIN[!is.finite(victoria$TMIN)] <- NA
