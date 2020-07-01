@@ -2,7 +2,8 @@
 ## Viet Dao ######
 ## Jun 15, 2020 ##
 
-library(tidyverse)
+require(tidyverse)
+require(dplyr)
 
 #########################################
 #### Hanoi (2012-09-04 - 2013-08-30) ####
@@ -41,7 +42,7 @@ hanoi <- hanoi[, c('NAME', 'DATE', 'PRCP', 'SNOW', 'SNWD', 'TMAX', 'TMIN')]
 
 
 #############################################
-#### St. Peter (2013-08-15 - 2017-05-31) ####
+#### St. Peter (2016-06-01 - 2017-05-31) ####
 #############################################
 stpeter_orig <- read.csv('./Data/stpeter.csv', header = TRUE, stringsAsFactors = FALSE)
 keepCols_stpeter <- c('NAME', 'DATE', 'PRCP', 'SNOW', 'SNWD', 'TMAX', 'TMIN')
@@ -55,7 +56,7 @@ stpeter <- stpeter[order(stpeter$DATE),]
 # fill NAs
 stpeter <- aggregate(stpeter, by=list(DATE_ID=stpeter$DATE), min, na.rm = TRUE)
 stpeter <- stpeter[, !(names(stpeter) %in% ('DATE_ID'))]
-stpeter['SNWD'][stpeter['SNOW']==0] <- 0
+stpeter['SNWD'][stpeter$SNOW==0 & !is.finite(stpeter$SNWD)] <- 0
 
 stpeter$PRCP[!is.finite(stpeter$PRCP)] <- NA
 stpeter$SNWD[!is.finite(stpeter$SNWD)] <- NA
@@ -69,6 +70,8 @@ View(stpeter %>% filter(is.na(PRCP)|is.na(SNWD)|is.na(TMAX)|is.na(TMIN)))
 
 # rename for simplicty
 stpeter$NAME <- 'STPETER'
+
+stpeter <- stpeter[stpeter$DATE >= '2016-06-01',]
 
 
 #################################################
