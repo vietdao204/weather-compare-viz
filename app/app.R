@@ -1,95 +1,110 @@
-#
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
+## Weather Compare Shiny App #
+## Viet Dao ##################
+## Jul 2, 2020 ###############
 
 library(shiny)
 library(ggplot2)
 library(gridExtra)
 library(lattice)
-
-dataset <- diamonds
+library(ggimage)
+library(dplyr)
 
 ui <- fluidPage(
     titlePanel("Weather Comparison Visualization", windowTitle = "Weather Comparison Visualization"),
     
     sidebarLayout(
-        
-        # Sidebar with a slider input
         sidebarPanel(
-            h4("Data to display"),
-            checkboxInput("fullData", "Use full data", value = F),
-            checkboxInput("hanoi", "Hanoi, Vietnam", value = T),
-            checkboxInput("stpeter", "St. Peter, MN", value = T),
-            checkboxInput("sf", "San Francisco, CA", value = T),
-            checkboxInput("oakland", "Oakland, CA", value = T),
-            checkboxInput("swarthmore", "Swarthmore, PA", value = T),
-            checkboxInput("victoria", "Victoria, BC", value = T),
-            checkboxInput("leuven", "Leuven, Belgium", value = T),
-            h4("Time of Year"),
-            sliderInput("months","Months", min=1, max=12, value = c(1, 3), dragRange = TRUE),
+            h4("Background"),
+            p("I am fortunate to have lived in a few places throughtout my life, from my hometown of Hanoi, Vietnam to my next venture in Victoria, Canada. This visualization provides critical information when I need to plan for my subsequent moves."),
+            p("Weather data for each city are provided by NOAA and are of the last year of the time I lived in that city."),
+            p("Click on Visualize for magic."),
+            h4("Cities"),
+            checkboxInput("hanoi_chek", "Hanoi, Vietnam", value = F),
+            checkboxInput("stpeter_chek", "St. Peter, MN", value = F),
+            checkboxInput("sf_chek", "San Francisco, CA", value = F),
+            checkboxInput("oakland_chek", "Oakland, CA", value = F),
+            checkboxInput("swarthmore_chek", "Swarthmore, PA", value = T),
+            checkboxInput("victoria_chek", "Victoria, BC", value = T),
+            actionButton("visualize", "Visualize"),
+            sliderInput("months","Months", min=1, max=12, value = c(1, 12), dragRange = TRUE),
             width = 3
         ),
-        
-        # Show a plot of the generated distribution
         mainPanel(
-            plotOutput("plot")
-        )
-    ),
-    
-    fluidRow(
-        column(3,
-               h4("Diamonds Explorer"),
-               sliderInput('sampleSize', 'Sample Size', 
-                           min=1, max=nrow(dataset),
-                           value=min(1000, nrow(dataset)), 
-                           step=500, round=0),
-               br(),
-               checkboxInput('jitter', 'Jitter'),
-               checkboxInput('smooth', 'Smooth')
-        ),
-        column(4, offset = 1,
-               selectInput('x', 'X', names(dataset)),
-               selectInput('y', 'Y', names(dataset), names(dataset)[[2]]),
-               selectInput('color', 'Color', c('None', names(dataset)))
-        ),
-        column(4,
-               selectInput('facet_row', 'Facet Row',
-                           c(None='.', names(diamonds[sapply(diamonds, is.factor)]))),
-               selectInput('facet_col', 'Facet Column',
-                           c(None='.', names(diamonds[sapply(diamonds, is.factor)])))
+            plotOutput("temp_plot"),
+            plotOutput("snow_prep_plots")
         )
     )
 )
 
-server <- function(input, output) 
-{
-    dataset <- reactive({
-        diamonds[sample(nrow(diamonds), input$sampleSize),]
-    })
-    
-    output$plot <- renderPlot({
+server <- function(input, output) {
+    observeEvent(input$visualize, {
+        filtered_cities <- c()
+        if (!input$hanoi_chek) {
+            filtered_cities <- c(filtered_cities, 'HANOI')
+        }
+        if (!input$stpeter_chek) {
+            filtered_cities <- c(filtered_cities, 'STPETER')
+        }
+        if (!input$sf_chek) {
+            filtered_cities <- c(filtered_cities, 'SF')
+        }
+        if (!input$oakland_chek) {
+            filtered_cities <- c(filtered_cities, 'OAKLAND')
+        }
+        if (!input$swarthmore_chek) {
+            filtered_cities <- c(filtered_cities, 'SWARTHMORE')
+        }
+        if (!input$victoria_chek) {
+            filtered_cities <- c(filtered_cities, 'VICTORIA')
+        }
         
-        p <- ggplot(dataset(), aes_string(x=input$x, y=input$y)) + geom_point()
+        temp_plot_data <- temp_plot_data %>% filter(!(CITY %in% filtered_cities))
         
-        if (input$color != 'None')
-            p <- p + aes_string(color=input$color)
-        
-        facets <- paste(input$facet_row, '~', input$facet_col)
-        if (facets != '. ~ .')
-            p <- p + facet_grid(facets)
-        
-        if (input$jitter)
-            p <- p + geom_jitter()
-        if (input$smooth)
-            p <- p + geom_smooth()
-        # p = grid.arrange(p1, p2, p3, p4, ncol=2)  
-        print(p)
-        
+        output$temp_plot <- renderPlot({
+            ggplot(temp_plot_data, aes(x=WEEK, y=TMAX_mean, group=CITY, colour=CITY)) + 
+                geom_ribbon(aes(ymin=TMIN_mean, ymax=TMAX_mean, fill=CITY), alpha=0.6, linetype=0) +
+                scale_x_continuous(breaks = c(1, 14, 27, 40, 52),
+                                   labels = c("1"="1 (Jan)", "14"="14 (Apr)", "27"="27 (Jul)", "40"="40 (Oct)", "52"="52 (Dec)")) + 
+                scale_y_continuous(breaks = pretty(temp_plot_data$TMAX_mean, n = 5)) +
+                labs(
+                    x = 'Week',
+                    y = 'Celcius',
+                    title = 'Weekly Average Temperatures'
+                ) +
+                theme(plot.title = element_text(hjust = 0.5)) +
+                theme(legend.position = "none")
+        })
+
+        output$snow_prep_plots <- renderPlot({
+            prep_plot <- ggplot(temp_plot_data, aes(x=WEEK, y=PRCP_mean, group=CITY, colour=CITY)) +
+                geom_ribbon(aes(ymin=0, ymax=PRCP_mean, fill=CITY), alpha=0.6, linetype=0) +
+                scale_x_continuous(breaks = c(1, 14, 27, 40, 52),
+                                   labels = c("1"="1 (Jan)", "14"="14 (Apr)", "27"="27 (Jul)", "40"="40 (Oct)", "52"="52 (Dec)")) + 
+                scale_y_continuous(breaks = pretty(temp_plot_data$PRCP_mean, n = 5)) +
+                labs(
+                    x = 'Week',
+                    y = 'mm',
+                    title = 'Weekly Average Precipitation'
+                ) +
+                theme(plot.title = element_text(hjust = 0.5), 
+                      legend.position = "none")
+            
+            snow_plot <- ggplot(snow_plot_data, aes(x=SNOW_TOTALS, y=SNOW_DAYS, label=CITY)) + 
+                geom_point(size=3) +
+                geom_image(aes(image=c("~/git/weather-compare-viz/snowflake.png"))) +
+                geom_text(hjust=-.15,vjust=.3) +
+                xlim(0, 650) +
+                ylim(0, 50) +
+                labs(
+                    x = 'Total snow fall over year (mm)',
+                    y = 'Number of snow days over year',
+                    title = 'Snow Fall'
+                ) +
+                theme(plot.title = element_text(hjust = 0.5))
+            
+            p = grid.arrange(prep_plot, snow_plot, ncol=2)  
+            print(p)
+        })
     })
 }
 
