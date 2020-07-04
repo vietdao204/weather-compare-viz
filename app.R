@@ -18,6 +18,7 @@ ui <- fluidPage(
             p("I am fortunate to have lived in a few places throughtout my life, from my hometown of Hanoi, Vietnam to my next venture in Victoria, Canada. This visualization provides critical information when I need to plan for my subsequent moves."),
             p("Weather data for each city are provided by NOAA and are of the last year of the time I lived in that city."),
             p("Click on Visualize for magic."),
+            br(),
             h4("Cities"),
             checkboxInput("hanoi_chek", "Hanoi, Vietnam", value = T),
             checkboxInput("stpeter_chek", "St. Peter, MN", value = F),
@@ -29,7 +30,8 @@ ui <- fluidPage(
             actionButton("visualize", "Visualize"),
             # sliderInput("months","Months", min=1, max=12, value = c(1, 12), dragRange = TRUE),
             p(" "),
-            tags$a(href="https://github.com/vietdao204/weather-compare-viz", "Source code by Viet Dao"),
+            br(),
+            tags$a(target="_blank", href="https://github.com/vietdao204/weather-compare-viz", "Developed by Viet Dao"),
             width = 3
         ),
         mainPanel(
