@@ -15,7 +15,7 @@ Weather data for each city are provided by [NOAA](https://www.ncdc.noaa.gov/cdo-
 ## Scripts
 
 `cleaning.R` and `plotting.R` contains R code for data pre-processing and plotting.  
-`app.R` creates the Weather Comparison Visualization Shiny app, hosted at ...
+`app.R` creates the [Shiny app](https://vietdao204.shinyapps.io/weather-compare-viz/).
 
 ## Built With
 
@@ -27,7 +27,7 @@ Weather data for each city are provided by [NOAA](https://www.ncdc.noaa.gov/cdo-
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
 
 ## Acknowledgments
 

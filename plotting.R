@@ -80,7 +80,7 @@ snow_plot_data <- data.frame(CITY, SNOW_TOTALS, SNOW_DAYS)
 
 ggplot(snow_plot_data, aes(x=SNOW_TOTALS, y=SNOW_DAYS, label=CITY)) + 
   geom_point(size=3) +
-  geom_image(aes(image=c("~/git/weather-compare-viz/snowflake.png"))) +
+  geom_image(aes(image=c("~/snowflake.png"))) +
   geom_text(hjust=-.15,vjust=.3) +
   xlim(0, 650) +
   ylim(0, 50) +
