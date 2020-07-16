@@ -113,9 +113,9 @@ server <- function(input, output) {
                 xlim(0, 650) +
                 ylim(0, 50) +
                 labs(
-                    x = 'Total snow fall over year (mm)',
-                    y = 'Number of snow days over year',
-                    title = 'Snow Fall'
+                    x = 'Total snow fall (mm)',
+                    y = 'Number of snow days',
+                    title = 'Snow Fall Over Year'
                 ) +
                 theme(plot.title = element_text(hjust = 0.5))
             
