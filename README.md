@@ -5,12 +5,12 @@ I am fortunate to have lived in a few places throughtout my life, from my hometo
 
 ## Data
 Weather data for each city are provided by [NOAA](https://www.ncdc.noaa.gov/cdo-web/search) and except for Victoria are of the last year of the time I lived in that city:  
-- Hanoi (2012-09-04 - 2013-08-30)  
-- St. Peter (2016-06-01 - 2017-05-31)  
-- San Francisco (2017-06-01 - 2019-09-05)  
-- Oakland (2018-05-01 - 2019-09-05)  
-- Swarthmore (2019-06-15 - 2020-06-14)  
-- Victoria (2019-06-16 - 2020-06-15)  
+- Hanoi (Sep 2012 - Aug 2013)  
+- St. Peter (Jun 2016 - Mayt 2017)  
+- San Francisco (Jun 2017 - May 2019)  
+- Oakland (May 2018 - Sep 2019)  
+- Swarthmore (Jun 2019 - Jun 2020)  
+- Victoria (Jun 2019 - Jun 2020)  
 
 ## Scripts
 
