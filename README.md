@@ -1,10 +1,10 @@
 # Weather Comparison Visualization
 
 ## Context
-I am fortunate to have lived in a few places throughtout my life, from my hometown of Hanoi, Vietnam to my next venture in Victoria, Canada. This visualization provides critical information when I need to plan for my subsequent moves. 
+I am fortunate to have lived in a few places throughtout my life, from my hometown of Hanoi, Vietnam to my next venture in Victoria, Canada. This visualization is helpful when I need to plan for my subsequent moves. 
 
 ## Data
-Weather data for each city are provided by [NOAA](https://www.ncdc.noaa.gov/cdo-web/search) and except for Victoria are of the last year of the time I lived in that city:  
+Weather data for each city are provided by [NOAA](https://www.ncdc.noaa.gov/cdo-web/search) and except for Victoria, are of the last year of the time I lived in that city:  
 - Hanoi (Sep 2012 - Aug 2013)  
 - St. Peter (Jun 2016 - May 2017)  
 - San Francisco (Jun 2017 - May 2019)  
@@ -28,7 +28,3 @@ Weather data for each city are provided by [NOAA](https://www.ncdc.noaa.gov/cdo-
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
-
-## Acknowledgments
-
-* [NOAA](https://www.ncdc.noaa.gov/cdo-web/search)
