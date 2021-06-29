@@ -15,9 +15,8 @@ ui <- fluidPage(
     sidebarLayout(
         sidebarPanel(
             h4("Background"),
-            p("I am fortunate to have lived in a few places throughtout my life, from my hometown of Hanoi, Vietnam to my next venture in Victoria, Canada. This visualization provides critical information when I need to plan for my subsequent moves."),
+            p("Whenever I consider a move, this dashboard will provide an idea of what the weather of the new place is like in comparison with where I lived previously."),
             p("Weather data for each city are provided by NOAA and except for Victoria, are of the last year of the time I lived in that city."),
-            p("Click on Visualize for magic."),
             br(),
             h4("Cities"),
             checkboxInput("hanoi_chek", "Hanoi, Vietnam", value = T),
