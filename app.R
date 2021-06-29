@@ -15,8 +15,7 @@ ui <- fluidPage(
     sidebarLayout(
         sidebarPanel(
             h4("Background"),
-            p("Whenever I consider a move, this dashboard will provide an idea of what the weather of the new place is like in comparison with where I lived previously."),
-            p("Weather data for each city are provided by NOAA and except for Victoria, are of the last year of the time I lived in that city."),
+            p("Whenever I consider a move, this dashboard will provide an idea of what the weather of the new place is like in comparison to where I have lived previously."),
             br(),
             h4("Cities"),
             checkboxInput("hanoi_chek", "Hanoi, Vietnam", value = T),
@@ -30,7 +29,8 @@ ui <- fluidPage(
             # sliderInput("months","Months", min=1, max=12, value = c(1, 12), dragRange = TRUE),
             p(" "),
             br(),
-            tags$a(target="_blank", href="https://github.com/vietdao204/weather-compare-viz", "Developed by Viet Dao"),
+            p("Developed by Viet Dao"),
+            tags$a(target="_blank", href="https://github.com/vietdao204/weather-compare-viz", "Source code"),
             width = 3
         ),
         mainPanel(

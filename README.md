@@ -1,10 +1,7 @@
 # Weather Comparison Visualization
 
-## Context
-I am fortunate to have lived in a few places throughtout my life, from my hometown of Hanoi, Vietnam to my next venture in Victoria, Canada. This visualization is helpful when I need to plan for my subsequent moves. 
-
 ## Data
-Weather data for each city are provided by [NOAA](https://www.ncdc.noaa.gov/cdo-web/search) and except for Victoria, are of the last year of the time I lived in that city:  
+Weather data for each city are provided by [NOAA](https://www.ncdc.noaa.gov/cdo-web/search) and span the following periods:  
 - Hanoi (Sep 2012 - Aug 2013)  
 - St. Peter (Jun 2016 - May 2017)  
 - San Francisco (Jun 2017 - May 2019)  
@@ -14,12 +11,13 @@ Weather data for each city are provided by [NOAA](https://www.ncdc.noaa.gov/cdo-
 
 ## Scripts
 
-`cleaning.R` and `plotting.R` contains R code for data pre-processing and plotting.  
+`cleaning.R` cleans each data file.  
+`plotting.R` aggregates data for each plot.  
 `app.R` creates the [Shiny app](https://vietdao204.shinyapps.io/weather-compare-viz/).
 
 ## Built With
 
-* R + RStudio
+* R, Shiny, ggplot2
 
 ## Authors
 
