@@ -1,14 +1,14 @@
 ## Data Cleaning #
 ## Viet Dao ######
-## Jun 15, 2020 ##
+## May 2020 ######
 
 require(tidyverse)
 require(dplyr)
 
 #########################################
-#### Hanoi (2012-09-04 - 2013-08-30) ####
+#### Hanoi ####
 #########################################
-hanoi_orig <- read.csv('./Data/hanoi.csv', header = TRUE, stringsAsFactors = FALSE)
+hanoi_orig <- read.csv('./data/hanoi.csv', header = TRUE, stringsAsFactors = FALSE)
 keepCols_hanoi <- c('NAME', 'DATE', 'PRCP', 'TAVG', 'TMAX', 'TMIN')
 hanoi <- hanoi_orig[, keepCols_hanoi]
 
@@ -42,9 +42,9 @@ hanoi <- hanoi[, c('NAME', 'DATE', 'PRCP', 'SNOW', 'SNWD', 'TMAX', 'TMIN')]
 
 
 #############################################
-#### St. Peter (2016-06-01 - 2017-05-31) ####
+#### St. Peter ####
 #############################################
-stpeter_orig <- read.csv('./Data/stpeter.csv', header = TRUE, stringsAsFactors = FALSE)
+stpeter_orig <- read.csv('./data/stpeter.csv', header = TRUE, stringsAsFactors = FALSE)
 keepCols_stpeter <- c('NAME', 'DATE', 'PRCP', 'SNOW', 'SNWD', 'TMAX', 'TMIN')
 stpeter <- stpeter_orig[, keepCols_stpeter];
 # stpeter %>% group_by(NAME) %>% summarise(n = n())
@@ -66,7 +66,7 @@ stpeter$TMIN[!is.finite(stpeter$TMIN)] <- NA
 # sapply(stpeter, function(x) sum(is.infinite(x)))
 
 # few NA is okay
-View(stpeter %>% filter(is.na(PRCP)|is.na(SNWD)|is.na(TMAX)|is.na(TMIN)))
+# View(stpeter %>% filter(is.na(PRCP)|is.na(SNWD)|is.na(TMAX)|is.na(TMIN)))
 
 # rename for simplicty
 stpeter$NAME <- 'STPETER'
@@ -77,7 +77,7 @@ stpeter <- stpeter[stpeter$DATE >= '2016-06-01',]
 #################################################
 #### San Francisco (2017-06-01 - 2019-09-05) ####
 #################################################
-sf_orig <- read.csv('./Data/sf.csv', header = TRUE, stringsAsFactors = FALSE);
+sf_orig <- read.csv('./data/sf.csv', header = TRUE, stringsAsFactors = FALSE);
 keepCols_sf <- c('NAME', 'DATE', 'PRCP', 'SNOW', 'SNWD', 'TMAX', 'TMIN')
 sf <- sf_orig[, keepCols_sf]
 
@@ -95,7 +95,7 @@ sf[c('SNOW', 'SNWD')][is.na(sf[c('SNOW', 'SNWD')])] <- 0
 ###########################################
 #### Oakland (2018-05-01 - 2019-09-05) ####
 ###########################################
-oakland_orig <- read.csv('./Data/oakland.csv', header = TRUE, stringsAsFactors = FALSE)
+oakland_orig <- read.csv('./data/oakland.csv', header = TRUE, stringsAsFactors = FALSE)
 oakland <- oakland_orig[, keepCols_sf]
 sapply(oakland, function(x) sum(is.na(x)))
 
@@ -141,10 +141,10 @@ row.names(swarthmore) <- NULL
 ############################################
 #### Victoria (2019-06-16 - 2020-06-15) ####
 ############################################
-victoria_orig <- read.csv('./Data/victoria.csv', header = TRUE, stringsAsFactors = FALSE)
+victoria_orig <- read.csv('./data/victoria.csv', header = TRUE, stringsAsFactors = FALSE)
 
-victoria_orig %>% group_by(NAME) %>% summarise(n = n())
-sapply(victoria_orig, function(x) sum(is.na(x)))
+# victoria_orig %>% group_by(NAME) %>% summarise(n = n())
+# sapply(victoria_orig, function(x) sum(is.na(x)))
 
 victoria <- victoria_orig[, keepCols_sf]
 
@@ -159,7 +159,7 @@ victoria$NAME <- 'VICTORIA'
 victoria <- aggregate(victoria, by=list(DATE_ID=victoria$DATE), min, na.rm = TRUE)
 victoria <- victoria[, !(colnames(victoria)=='DATE_ID')]
 
-sapply(victoria, function(x) sum(!is.finite(x)))
+# sapply(victoria, function(x) sum(!is.finite(x)))
 victoria[is.infinite(victoria$SNWD),]['SNWD'] <- 0
 victoria[is.infinite(victoria$SNOW),]['SNOW'] <- 0
 victoria$TMAX[!is.finite(victoria$TMAX)] <- NA

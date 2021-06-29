@@ -5,6 +5,10 @@ account: vietdao204
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 2534752
-bundleId: 3400590
+bundleId: 4767754
 url: https://vietdao204.shinyapps.io/weather-compare-viz/
-when: 1594917502.21507
+when: 1624952556.72115
+lastSyncTime: 1624952556.72117
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: sketch/snow-prep_sketch.png|sketch/temp_sketch.png
